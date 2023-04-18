@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package root;
+
+// Interface exported by the server.
+service Common {
+  // A simple RPC.
+  rpc Simple(SimpleRequest) returns (SimpleReply) {}
+
+  // A server-to-client streaming RPC.
+  rpc Server(SimpleRequest) returns (stream StreamReply) {}
+
+  // A client-to-server streaming RPC.
+  rpc Client(stream StreamRequest) returns (SimpleReply) {}
+
+  // Streaming RPC.
+  rpc Both(stream StreamRequest) returns (stream StreamReply) {}
+}
+
+enum DataType {  
+  Proto = 0;
+  Json = 1;
+  Raw = 2;
+}
+
+enum CryptoType {
+  None = 0;
+  Rsa = 1;
+  Aes = 2;
+  Sha256 = 3;
+}
+
+message SimpleRequest {
+  uint32 cmd = 1;
+  bytes data = 2;
+  DataType type = 3;
+  CryptoType crypto = 4;
+}
+
+message SimpleReply {  
+  uint32 cmd = 1;
+  optional bytes data = 2;
+  DataType type = 3;
+  CryptoType crypto = 4;
+  optional uint32 error_code = 5;
+}
+
+message StreamRequest {
+  string msg = 1;
+  bytes data = 2;
+}
+
+message StreamReply {  
+  string msg = 1;
+  optional bytes data = 2;
+  optional uint32 error_code = 3;
+}

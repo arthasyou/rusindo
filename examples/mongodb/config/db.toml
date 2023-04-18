@@ -1,0 +1,22 @@
+[mongodb]
+host = "localhost"
+port = 27017
+database = "auth"
+# user_name = "myUserAdmin"   # Optiom
+# password = "123456"         # Optiom
+# app_name = "name"           # Optiom
+
+# # Optiom
+# [mongodb.tls]
+# allow_invalid_certificates = true
+# ca_file_path = "filepath"
+# cert_key_file_path = "filepath"
+[web]
+host = "localhost"
+port = 8080
+logger = false
+cros = true
+# # Optiom
+[web.ssl]
+key = "keys/key.pem"
+cert = "keys/cert.pem"
