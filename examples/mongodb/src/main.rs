@@ -1,11 +1,10 @@
-
 mod settings;
-use rusindo::database::mongodb::MongoDB;
-use rusindo::network::web::server;
 use crate::settings::Settings;
 use dotenv::dotenv;
+use rusindo::database::mongo::MongoDB;
+use rusindo::network::web::server;
 
-use actix_web::{get, post, web, HttpResponse, Responder, web::ServiceConfig, web::Data};
+use actix_web::{get, post, web, web::Data, web::ServiceConfig, HttpResponse, Responder};
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -22,23 +21,19 @@ async fn manual_hello(db: Data<MongoDB>) -> impl Responder {
     HttpResponse::Ok().body("Hey there!")
 }
 
-
-
 pub fn root(cfg: &mut ServiceConfig) {
-    cfg.route("/hey", web::get().to(manual_hello))
-    ;
+    cfg.route("/hey", web::get().to(manual_hello));
 }
-
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-    env_logger::init();  
+    env_logger::init();
     let settings = Settings::new().unwrap();
     println!("{:?}", settings);
 
     let db = MongoDB::new(settings.mongodb).await.unwrap();
-    
+
     // println!("{:?}", db);
     server::start(settings.web, root, vec![db]).await
 }
