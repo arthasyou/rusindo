@@ -1,2 +1,2 @@
-#[cfg(feature = "mongodb")]
-pub mod mongodb;
+#[cfg(feature = "mongo")]
+pub mod mongo;

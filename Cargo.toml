@@ -41,9 +41,9 @@ tokio-stream = "0.1.14"
 async-stream = "0.3.5"
 
 [features]
-database = []
+# database = []
 jwt = []
-mongodb = []
+mongo = []
 
 [build-dependencies]
 tonic-build = "0.10"
