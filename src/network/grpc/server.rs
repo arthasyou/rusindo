@@ -1,31 +1,31 @@
-
-
-
-use super::root::common_server::{ Common, CommonServer };
-use super::root::{ SimpleRequest, SimpleReply, StreamRequest, StreamReply };
+use super::root::common_server::{Common, CommonServer};
+use super::root::{SimpleReply, SimpleRequest, StreamReply, StreamRequest};
 
 use futures_core::Stream;
 use std::pin::Pin;
 use std::sync::Arc;
 use tokio::sync::mpsc;
-use tonic::{Request, Response, Status};
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::transport::Server;
+use tonic::{Request, Response, Status};
 
 #[derive(Debug, Default)]
 pub struct RootService<F>
-where F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static, 
+where
+    F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static,
 {
     router: F,
 }
 
 #[tonic::async_trait]
-impl<F> Common for RootService<F> 
-where F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static
+impl<F> Common for RootService<F>
+where
+    F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static,
 {
-    async fn simple(&self, request: Request<SimpleRequest>) -> Result<Response<SimpleReply>, Status> {
-        
-    
+    async fn simple(
+        &self,
+        request: Request<SimpleRequest>,
+    ) -> Result<Response<SimpleReply>, Status> {
         Ok(Response::new(SimpleReply::default()))
     }
 
@@ -36,10 +36,8 @@ where F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static
         request: Request<SimpleRequest>,
     ) -> Result<Response<Self::ServerStream>, Status> {
         let (tx, rx) = mpsc::channel(4);
-        
-        tokio::spawn(async move {
-            
-        });
+
+        tokio::spawn(async move {});
 
         Ok(Response::new(ReceiverStream::new(rx)))
     }
@@ -51,7 +49,7 @@ where F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static
         unimplemented!()
     }
 
-    type BothStream = Pin<Box<dyn Stream<Item = Result<StreamReply, Status>> + Send  + 'static>>;
+    type BothStream = Pin<Box<dyn Stream<Item = Result<StreamReply, Status>> + Send + 'static>>;
 
     async fn both(
         &self,
@@ -61,8 +59,9 @@ where F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static
     }
 }
 
-async fn start<F>(router:F) -> Result<(), Box<dyn std::error::Error>> 
-where F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static
+async fn start<F>(router: F) -> Result<(), Box<dyn std::error::Error>>
+where
+    F: Fn(u32, Vec<u8>) -> Vec<u8> + std::marker::Sync + Send + 'static,
 {
     let addr = "[::1]:10000".parse().unwrap();
 
